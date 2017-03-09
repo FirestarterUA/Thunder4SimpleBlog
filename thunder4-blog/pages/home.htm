@@ -1,0 +1,27 @@
+title = "Main Page"
+url = "/"
+layout = "default"
+is_hidden = 0
+==
+<?php
+use Firestarter\Thunder4\Models\Article;
+
+function onStart(){
+    
+    $this['articles'] = Article::where('domain_id', (string) Request::get('currentDomain')->id)->orderBy('created_at', 'desc')->paginate(15);
+    $this->page->title = $this->page->meta_title = $this['articles'][0]->title;
+    $this->page->meta_description = $this['articles'][0]->description;
+}
+?>
+==
+<div class="container">
+    
+    {% for article in articles %}
+    <h2><a href="{{ 'article'|page({ slug: article.slug }) }}">{{article.title}}</a></h2>
+    <p><strong>{{article.created_at}}</strong> in <a href="{{ 'category'|page({ slug: article.category.slug }) }}">{{article.category.name}}</a></p>
+    {{article.body|raw}}
+
+    <hr />
+    {% endfor %}
+
+</div>

@@ -1,0 +1,28 @@
+title = "Article"
+url = "/article/:slug"
+layout = "default"
+is_hidden = 0
+==
+<?php
+use Firestarter\Thunder4\Models\Article;
+
+function onStart(){
+    
+    $this['article'] = Article::where('slug', $this->param('slug'))->firstOrFail();
+    $this->page->title = $this->page->meta_title = $this['article']->title;
+    $this->page->meta_description = $this['article']->description;
+}
+?>
+==
+<div class="container">
+
+    <div class="page-header">
+        <h1><a href="{{ 'article'|page({ slug: article.slug }) }}">{{article.title}}</a></h1>
+        <p><strong>{{article.created_at}}</strong> in <a href="{{ 'category'|page({ slug: article.category.slug }) }}">{{article.category.name}}</a></p>
+    </div>
+    
+    {{article.body|raw}}
+
+    <hr />
+
+</div>
